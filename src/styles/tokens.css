@@ -143,9 +143,12 @@
   --shadow-glow: 0 0 0 1px var(--color-primary-ring), 0 0 32px -8px var(--color-primary-ring);
   --shadow-raised: 0 16px 40px -16px color-mix(in srgb, var(--black) 70%, transparent);
   --filter-drop-shadow: drop-shadow(0 4px 12px color-mix(in srgb, var(--black) 60%, transparent));
+  /* 배경 이미지 위에 바로 놓이는 글자용. 패널 안 글자에는 쓰지 않는다 */
+  --shadow-text: 0 1px 2px color-mix(in srgb, var(--black) 70%, transparent),
+    0 2px 18px color-mix(in srgb, var(--black) 85%, transparent);
+  --blur-backdrop: 6px; /* 배경 배너. 내용이 읽히는 정도로만 약하게 */
   --blur-sm: 10px;
   --blur-md: 16px;
-  --blur-backdrop: 28px;
 
   /* ── 움직임 ── */
   --duration-fast: 120ms;

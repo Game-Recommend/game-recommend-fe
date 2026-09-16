@@ -7,6 +7,10 @@ import { HeroBackdrop } from "@/components/HeroBackdrop";
 import styles from "@/components/RecommendScreen.module.css";
 import { StageProgress } from "@/components/StageProgress";
 import { TrailerPanel } from "@/components/TrailerPanel";
+import { Button } from "@/components/ui/Button";
+import { Chip } from "@/components/ui/Chip";
+import { Panel } from "@/components/ui/Panel";
+import { TextArea } from "@/components/ui/TextArea";
 import {
   RecommendationError,
   requestRecommendation,
@@ -133,7 +137,7 @@ export function RecommendScreen() {
             <label className="visually-hidden" htmlFor="question">
               게임 추천 질문
             </label>
-            <textarea
+            <TextArea
               id="question"
               className={styles.input}
               value={question}
@@ -145,30 +149,20 @@ export function RecommendScreen() {
               autoComplete="off"
             />
             <div className={styles.actions}>
-              <button
-                type="submit"
-                className={styles.button}
-                disabled={loading || question.trim() === ""}
-              >
+              <Button type="submit" disabled={loading || question.trim() === ""}>
                 추천받기
-              </button>
+              </Button>
               {loading && (
-                <button
-                  type="button"
-                  className={`${styles.button} ${styles.buttonGhost}`}
-                  onClick={cancel}
-                >
+                <Button variant="secondary" onClick={cancel}>
                   취소
-                </button>
+                </Button>
               )}
             </div>
           </form>
           <ul className={styles.examples} aria-label="예시 질문">
             {EXAMPLE_QUESTIONS.map((example) => (
               <li key={example.label}>
-                <button
-                  type="button"
-                  className={styles.chip}
+                <Chip
                   title={example.question}
                   disabled={loading}
                   onClick={() => {
@@ -177,7 +171,7 @@ export function RecommendScreen() {
                   }}
                 >
                   {example.label}
-                </button>
+                </Chip>
               </li>
             ))}
           </ul>
@@ -186,21 +180,25 @@ export function RecommendScreen() {
         {phase.status === "loading" && <StageProgress events={phase.stages} />}
 
         {phase.status === "error" && (
-          <p className={`${styles.panel} ${styles.error}`} role="alert">
+          <Panel as="p" tone="danger" padding="sm" role="alert">
             {phase.message}
-          </p>
+          </Panel>
         )}
 
         {result && (
           <section className={styles.results} aria-label="추천 결과">
-            <p className={`${styles.panel} ${styles.answer}`}>{result.answer}</p>
+            <Panel as="p" className={styles.answer}>
+              {result.answer}
+            </Panel>
 
             {result.warnings.length > 0 && (
-              <ul className={`${styles.panel} ${styles.warnings}`} aria-label="안내">
-                {result.warnings.map((warning, index) => (
-                  <li key={`${index}-${warning}`}>{warning}</li>
-                ))}
-              </ul>
+              <Panel tone="warning" padding="sm">
+                <ul className={styles.warnings} aria-label="안내">
+                  {result.warnings.map((warning, index) => (
+                    <li key={`${index}-${warning}`}>{warning}</li>
+                  ))}
+                </ul>
+              </Panel>
             )}
 
             {result.games.length > 0 ? (
@@ -218,9 +216,9 @@ export function RecommendScreen() {
                 <TrailerPanel game={selected} />
               </div>
             ) : (
-              <p className={`${styles.panel} ${styles.empty}`}>
+              <Panel as="p" padding="lg" className={styles.empty}>
                 조건을 모두 충족하는 게임을 찾지 못했어요. 조건을 조금 바꿔서 다시 물어보세요.
-              </p>
+              </Panel>
             )}
 
             {result.excluded_games.length > 0 && <ExcludedGames games={result.excluded_games} />}
@@ -234,7 +232,7 @@ export function RecommendScreen() {
 /** 가격·사양 검사에서 빠진 후보. 어떤 조건에 걸렸는지만 짧게 보여준다. */
 function ExcludedGames({ games }: { games: EvaluatedGame[] }) {
   return (
-    <details className={`${styles.panel} ${styles.excluded}`}>
+    <Panel as="details" padding="sm" className={styles.excluded}>
       <summary>조건에 맞지 않아 제외한 게임 {games.length}개</summary>
       <ul>
         {games.map(({ game, price, hardware }) => {
@@ -249,6 +247,6 @@ function ExcludedGames({ games }: { games: EvaluatedGame[] }) {
           );
         })}
       </ul>
-    </details>
+    </Panel>
   );
 }

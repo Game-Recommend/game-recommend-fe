@@ -1,4 +1,6 @@
 import styles from "@/components/RecommendScreen.module.css";
+import { Panel } from "@/components/ui/Panel";
+import { Spinner } from "@/components/ui/Spinner";
 import { PIPELINE_STAGES, type StageEvent, type StageStatus } from "@/lib/recommendation";
 
 const STATUS_LABELS: Record<StageStatus | "pending", string> = {
@@ -18,9 +20,9 @@ export function StageProgress({ events }: { events: StageEvent[] }) {
   const order = [...PIPELINE_STAGES, ...[...latest.keys()].filter((name) => !PIPELINE_STAGES.includes(name))];
 
   return (
-    <section className={`${styles.panel} ${styles.progress}`} aria-live="polite" aria-busy="true">
+    <Panel as="section" aria-live="polite" aria-busy="true">
       <p className={styles.progressTitle}>
-        <span className={styles.spinner} aria-hidden="true" />
+        <Spinner />
         추천을 준비하고 있어요. 보통 20초 안팎 걸려요.
       </p>
       {events.length > 0 && (
@@ -39,6 +41,6 @@ export function StageProgress({ events }: { events: StageEvent[] }) {
           })}
         </ol>
       )}
-    </section>
+    </Panel>
   );
 }

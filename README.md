@@ -33,9 +33,10 @@ SSE 진행처럼 흘려 보여주므로 진행 표시까지 함께 볼 수 있�
 
 ```text
 src/app/
-├─ layout.tsx        공통 레이아웃·메타데이터
+├─ layout.tsx        공통 레이아웃·메타데이터·글꼴
 ├─ page.tsx          추천 화면 진입점
-├─ globals.css       전역 스타일
+├─ globals.css       전역 기본 스타일
+├─ design-system/    디자인 시스템 견본 화면 (/design-system)
 └─ api/
    ├─ health/route.ts      GET /api/health (백엔드 /health 프록시)
    └─ recommend/route.ts   POST /api/recommend (백엔드 /recommend 프록시, JSON·SSE)
@@ -45,19 +46,33 @@ src/components/
 ├─ TrailerPanel.tsx           선택한 게임의 YouTube 트레일러
 ├─ HeroBackdrop.tsx           선택한 게임의 배너를 흐린 전체 배경으로 표시
 ├─ StageProgress.tsx          SSE 단계 진행 표시
-└─ RecommendScreen.module.css 화면 스타일
+├─ RecommendScreen.module.css 화면 배치 스타일
+└─ ui/                        공용 컴포넌트 (Button, Chip, Badge, Panel, TextArea, Spinner)
+src/styles/
+└─ tokens.css                 디자인 토큰 (색·글꼴·간격·모서리·효과)
 src/lib/
 ├─ backend.ts                 백엔드 호출 공통 로직 (주소·키·시간 제한·오류 처리·SSE 통과)
 ├─ recommendation.ts          백엔드 응답·SSE 이벤트 타입 (계약)
 ├─ recommend-client.ts        브라우저에서 /api/recommend 호출, SSE·JSON 응답 해석
 ├─ sse.ts                     fetch 응답 본문의 SSE 해석기
-└─ mock-recommendation.ts     ?mock=1용 예시 응답
+├─ mock-recommendation.ts     ?mock=1용 예시 응답
+└─ cx.ts                      조건부 className 합치기
 next.config.ts      Next.js 설정
 tsconfig.json       TypeScript 설정
 eslint.config.mjs   ESLint 설정
 .env.example        환경 변수 예시
+docs/DESIGN_SYSTEM.md      디자인 시스템 사용 규칙
 .github/workflows/ci.yml   PR·main 푸시 검증
 ```
+
+## 디자인 시스템
+
+메인 컬러는 옅은 검정(`#1a1c1a`) 배경, 흰 글씨, 선명한 연두(`#baf956`) 강조 세 가지입니다.
+색·글꼴·간격은 `src/styles/tokens.css`의 토큰으로만 지정하고, 버튼·칩·패널 같은 공용 요소는
+`src/components/ui`의 컴포넌트를 씁니다. 화면의 CSS 모듈은 배치만 담당합니다.
+
+토큰 값과 대비, 컴포넌트 상태는 <http://localhost:3000/design-system>에서 볼 수 있습니다.
+사용 규칙은 [docs/DESIGN_SYSTEM.md](docs/DESIGN_SYSTEM.md)에 정리했습니다.
 
 ## 추천 화면
 

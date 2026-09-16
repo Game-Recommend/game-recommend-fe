@@ -4,7 +4,7 @@
  * src/components/ui가 맡는다. 여기서는 그 컴포넌트가 정하지 않는 배치 속성만 더한다.
  */
 
-/* 배경: 선택한 게임의 배너를 흐리게 깔고 위에 어두운 그라데이션을 얹는다 */
+/* 배경: 선택한 게임의 배너를 아주 약하게만 흐리게 해서 화면에 깐다 */
 .backdrop {
   position: fixed;
   inset: 0;
@@ -19,19 +19,10 @@
   height: 100%;
   object-fit: cover;
   object-position: center;
-  filter: blur(var(--blur-backdrop)) saturate(1.15) brightness(0.7);
-  transform: scale(1.12);
+  /* 확대는 흐림 때문에 가장자리가 비치는 것을 덮는 용도다 */
+  filter: blur(var(--blur-backdrop));
+  transform: scale(1.03);
   animation: fade-in var(--duration-slow) ease both;
-}
-.backdropShade {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    180deg,
-    color-mix(in srgb, var(--color-bg) 50%, transparent) 0%,
-    color-mix(in srgb, var(--color-bg) 28%, transparent) 40%,
-    color-mix(in srgb, var(--color-bg) 84%, transparent) 100%
-  );
 }
 
 .page {
@@ -56,11 +47,13 @@
   color: var(--color-text-accent);
   font: var(--text-overline);
   letter-spacing: var(--tracking-overline);
+  text-shadow: var(--shadow-text);
 }
 .title {
   margin: 0;
   font: var(--text-display);
   letter-spacing: var(--tracking-display);
+  text-shadow: var(--shadow-text);
 }
 .form {
   display: flex;

@@ -36,6 +36,7 @@ src/app/
 ├─ layout.tsx        공통 레이아웃·메타데이터·글꼴
 ├─ page.tsx          추천 화면 진입점
 ├─ globals.css       전역 기본 스타일
+├─ icon.svg          브라우저 탭 아이콘 (BrandMark와 같은 모양)
 ├─ design-system/    디자인 시스템 견본 화면 (/design-system)
 └─ api/
    ├─ health/route.ts      GET /api/health (백엔드 /health 프록시)
@@ -47,7 +48,7 @@ src/components/
 ├─ HeroBackdrop.tsx           선택한 게임의 배너를 흐린 전체 배경으로 표시
 ├─ StageProgress.tsx          SSE 단계 진행 표시
 ├─ RecommendScreen.module.css 화면 배치 스타일
-└─ ui/                        공용 컴포넌트 (Button, Chip, Badge, Panel, TextArea, Spinner)
+└─ ui/                        공용 컴포넌트 (Button, Chip, Badge, Panel, TextArea, Spinner, BrandMark)
 src/styles/
 └─ tokens.css                 디자인 토큰 (색·글꼴·간격·모서리·효과)
 src/lib/

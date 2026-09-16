@@ -5,6 +5,7 @@ import type { CSSProperties } from "react";
 import { ColorToken } from "@/app/design-system/ColorToken";
 import styles from "@/app/design-system/page.module.css";
 import { Badge } from "@/components/ui/Badge";
+import { BrandMark } from "@/components/ui/BrandMark";
 import { Button } from "@/components/ui/Button";
 import { Chip } from "@/components/ui/Chip";
 import { Panel } from "@/components/ui/Panel";
@@ -150,7 +151,10 @@ export default function DesignSystemPage() {
   return (
     <main className={styles.page}>
       <header className={styles.header}>
-        <p className={styles.overline}>GAME RECOMMEND · DESIGN SYSTEM</p>
+        <p className={styles.overline}>
+          <BrandMark />
+          GAME RECOMMEND · DESIGN SYSTEM
+        </p>
         <h1 className={styles.title}>디자인 시스템</h1>
         <p className={styles.lead}>
           옅은 검정 바탕에 흰 글씨를 쓰고, 강조는 선명한 연두 한 가지로 합니다. 화면 코드는{" "}

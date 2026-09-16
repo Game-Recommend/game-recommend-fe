@@ -17,7 +17,7 @@
 ```text
 src/styles/tokens.css          토큰 정의 (원시 팔레트 + 의미 토큰)
 src/app/globals.css            전역 기본값 (reset, body, 포커스, 움직임 줄이기)
-src/components/ui/             공용 컴포넌트 (Button, Chip, Badge, Panel, TextArea, Spinner)
+src/components/ui/             공용 컴포넌트 (Button, Chip, Badge, Panel, TextArea, Spinner, BrandMark)
 src/app/design-system/         토큰·컴포넌트 견본 화면 (/design-system, 검색 비노출)
 docs/DESIGN_SYSTEM.md          이 문서
 ```
@@ -136,6 +136,7 @@ docs/DESIGN_SYSTEM.md          이 문서
 | `Panel` | `as`, `tone`: default·danger·warning, `padding`: none·sm·md·lg, `interactive`, `selected` | `as`로 section·article·p·details 등 뜻에 맞는 요소를 고릅니다 |
 | `TextArea` | textarea 속성 | 오류는 `aria-invalid="true"`, 라벨은 부르는 쪽에서 연결 |
 | `Spinner` | `size`: sm·md | 장식용이라 스크린 리더에 숨깁니다. 옆에 글자를 두세요 |
+| `BrandMark` | `className` | 브랜드 마크. 크기는 `em`이라 옆 글자를 따라갑니다. `GAME RECOMMEND` 표기 왼쪽에 두고, 같은 모양을 `src/app/icon.svg`가 탭 아이콘으로 씁니다 |
 
 ```tsx
 <Panel as="article" interactive selected={selected} className={styles.card} onClick={onSelect}>

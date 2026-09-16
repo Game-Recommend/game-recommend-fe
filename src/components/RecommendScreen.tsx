@@ -7,6 +7,7 @@ import { HeroBackdrop } from "@/components/HeroBackdrop";
 import styles from "@/components/RecommendScreen.module.css";
 import { StageProgress } from "@/components/StageProgress";
 import { TrailerPanel } from "@/components/TrailerPanel";
+import { BrandMark } from "@/components/ui/BrandMark";
 import { Button } from "@/components/ui/Button";
 import { Chip } from "@/components/ui/Chip";
 import { Panel } from "@/components/ui/Panel";
@@ -139,7 +140,10 @@ export function RecommendScreen() {
       <HeroBackdrop media={selected?.media ?? null} />
       <main className={styles.page}>
         <header className={styles.header}>
-          <p className={styles.brand}>GAME RECOMMEND</p>
+          <p className={styles.brand}>
+            <BrandMark className={styles.brandMark} />
+            GAME RECOMMEND
+          </p>
           <h1 className={styles.title}>다음으로 즐길 게임, 나에게 맞게.</h1>
           <form className={styles.form} onSubmit={onSubmit}>
             <label className="visually-hidden" htmlFor="question">

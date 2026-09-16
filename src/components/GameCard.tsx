@@ -3,6 +3,8 @@
 import { useState } from "react";
 
 import styles from "@/components/RecommendScreen.module.css";
+import { Badge, type BadgeTone } from "@/components/ui/Badge";
+import { Panel } from "@/components/ui/Panel";
 import type {
   CheckStatus,
   ConditionCheck,
@@ -19,10 +21,10 @@ type Props = {
 };
 
 /** skipped는 사용자가 그 조건을 걸지 않은 것이라 표시하지 않는다. */
-const CHECK_LABELS: Record<CheckStatus, string | null> = {
-  met: "충족",
-  unmet: "미충족",
-  unknown: "확인 불가",
+const CHECK_BADGES: Record<CheckStatus, { label: string; tone: BadgeTone } | null> = {
+  met: { label: "충족", tone: "success" },
+  unmet: { label: "미충족", tone: "danger" },
+  unknown: { label: "확인 불가", tone: "neutral" },
   skipped: null,
 };
 
@@ -46,10 +48,7 @@ export function GameCard({ evaluated, selected, onSelect }: Props) {
   ].filter((link): link is { href: string; label: string } => link !== null);
 
   return (
-    <article
-      className={`${styles.panel} ${styles.card} ${selected ? styles.cardSelected : ""}`}
-      onClick={onSelect}
-    >
+    <Panel as="article" interactive selected={selected} className={styles.card} onClick={onSelect}>
       <button
         type="button"
         className={styles.logoButton}
@@ -98,7 +97,7 @@ export function GameCard({ evaluated, selected, onSelect }: Props) {
           </p>
         )}
       </div>
-    </article>
+    </Panel>
   );
 }
 
@@ -121,12 +120,12 @@ function Logo({ media, name }: { media: GameMedia | null; name: string }) {
 }
 
 function CheckBadge({ check }: { check: ConditionCheck }) {
-  const label = CHECK_LABELS[check.status];
-  if (label === null) return null;
+  const badge = CHECK_BADGES[check.status];
+  if (badge === null) return null;
   return (
-    <span className={styles.badge} data-status={check.status} title={check.reason}>
-      {label}
-    </span>
+    <Badge tone={badge.tone} className={styles.badge} title={check.reason}>
+      {badge.label}
+    </Badge>
   );
 }
 

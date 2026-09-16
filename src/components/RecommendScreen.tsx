@@ -63,6 +63,7 @@ export function RecommendScreen() {
   const [question, setQuestion] = useState("");
   const [phase, setPhase] = useState<Phase>({ status: "idle" });
   const [selectedId, setSelectedId] = useState<number | null>(null);
+  const [expandedId, setExpandedId] = useState<number | null>(null);
   const abortRef = useRef<AbortController | null>(null);
 
   const submit = useCallback(async (text: string) => {
@@ -75,6 +76,7 @@ export function RecommendScreen() {
     abortRef.current = controller;
     setPhase({ status: "loading", stages: [] });
     setSelectedId(null);
+    setExpandedId(null);
 
     const onStage = (event: StageEvent) => {
       if (controller.signal.aborted) return;
@@ -102,6 +104,12 @@ export function RecommendScreen() {
       if (abortRef.current === controller) abortRef.current = null;
     }
   }, []);
+
+  /** 카드를 누르면 배경·트레일러가 그 게임으로 바뀐다. 펼친 카드를 다시 누르면 상세 정보만 접는다. */
+  const toggleGame = (igdbId: number) => {
+    setSelectedId(igdbId);
+    setExpandedId((prev) => (prev === igdbId ? null : igdbId));
+  };
 
   const cancel = () => {
     abortRef.current?.abort();
@@ -187,8 +195,10 @@ export function RecommendScreen() {
 
         {result && (
           <section className={styles.results} aria-label="추천 결과">
-            <Panel as="p" className={styles.answer}>
-              {result.answer}
+            <Panel padding="sm">
+              <p className={styles.answerText} role="region" aria-label="추천 요약" tabIndex={0}>
+                {result.answer}
+              </p>
             </Panel>
 
             {result.warnings.length > 0 && (
@@ -203,15 +213,18 @@ export function RecommendScreen() {
 
             {result.games.length > 0 ? (
               <div className={styles.columns}>
-                <div className={styles.list}>
-                  {result.games.map((item) => (
-                    <GameCard
-                      key={item.game.igdb_id}
-                      evaluated={item}
-                      selected={item.game.igdb_id === selectedId}
-                      onSelect={() => setSelectedId(item.game.igdb_id)}
-                    />
-                  ))}
+                <div className={styles.listWrap}>
+                  <div className={styles.list}>
+                    {result.games.map((item) => (
+                      <GameCard
+                        key={item.game.igdb_id}
+                        evaluated={item}
+                        selected={item.game.igdb_id === selectedId}
+                        expanded={item.game.igdb_id === expandedId}
+                        onToggle={() => toggleGame(item.game.igdb_id)}
+                      />
+                    ))}
+                  </div>
                 </div>
                 <TrailerPanel game={selected} />
               </div>

@@ -16,7 +16,7 @@ import {
   requestRecommendation,
   type RecommendationRequester,
 } from "@/lib/recommend-client";
-import type { EvaluatedGame, RecommendationResponse, StageEvent } from "@/lib/recommendation";
+import type { RecommendationResponse, StageEvent } from "@/lib/recommendation";
 
 /** 프록시가 검사하는 질문 길이 상한과 같습니다. */
 const MAX_QUESTION_LENGTH = 500;
@@ -233,33 +233,9 @@ export function RecommendScreen() {
                 조건을 모두 충족하는 게임을 찾지 못했어요. 조건을 조금 바꿔서 다시 물어보세요.
               </Panel>
             )}
-
-            {result.excluded_games.length > 0 && <ExcludedGames games={result.excluded_games} />}
           </section>
         )}
       </main>
     </>
-  );
-}
-
-/** 가격·사양 검사에서 빠진 후보. 어떤 조건에 걸렸는지만 짧게 보여준다. */
-function ExcludedGames({ games }: { games: EvaluatedGame[] }) {
-  return (
-    <Panel as="details" padding="sm" className={styles.excluded}>
-      <summary>조건에 맞지 않아 제외한 게임 {games.length}개</summary>
-      <ul>
-        {games.map(({ game, price, hardware }) => {
-          const reasons = [price.check, hardware.check]
-            .filter((check) => check.status === "unmet" || check.status === "unknown")
-            .map((check) => check.reason);
-          return (
-            <li key={game.igdb_id}>
-              <strong>{game.name}</strong>
-              {reasons.length > 0 && <span> · {reasons.join(" / ")}</span>}
-            </li>
-          );
-        })}
-      </ul>
-    </Panel>
   );
 }

@@ -140,8 +140,9 @@
 .step:last-child .stage {
   padding-right: 0;
 }
+/* 지나온 칸도 같은 연두로 두되 옅게 써서, 밝은 한 칸이 지금 도는 곳으로 읽히게 한다 */
 .stage[data-status="completed"] {
-  color: var(--color-text);
+  color: color-mix(in srgb, var(--color-primary) 62%, transparent);
 }
 /* 지금 도는 단계만 연두로 밝힌다 */
 .stage[data-status="started"] {
@@ -165,7 +166,7 @@
   transition: color var(--duration-base) ease;
 }
 .link[data-status="completed"] {
-  color: var(--color-border-strong);
+  color: color-mix(in srgb, var(--color-primary) 40%, transparent);
 }
 .link[data-status="started"] {
   color: var(--color-primary);

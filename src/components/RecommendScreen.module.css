@@ -26,6 +26,8 @@
 }
 
 .page {
+  /* 질문 입력란의 최소 높이. 최종 답변의 글 영역을 이 값의 두 배로 고정하는 데도 쓴다 */
+  --question-height: 60px;
   position: relative;
   z-index: var(--z-content);
   max-width: var(--container-max);
@@ -63,7 +65,7 @@
 .input {
   flex: 1;
   min-width: 0;
-  min-height: 60px;
+  min-height: var(--question-height);
 }
 .actions {
   display: flex;
@@ -136,7 +138,13 @@
   flex-direction: column;
   gap: var(--space-4);
 }
-.answer {
+/* 최종 답변: 질문 입력란의 두 배 높이로 고정하고, 넘치는 글은 이 안에서만 스크롤한다 */
+.answerText {
+  margin: 0;
+  height: calc(var(--question-height) * 2);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
   font: var(--text-body-lg);
   white-space: pre-line;
 }
@@ -150,68 +158,104 @@
   text-align: center;
 }
 
-/* 왼쪽 2/3 게임 목록, 오른쪽 1/3 트레일러 */
+/* 왼쪽 1/3 카드 목록, 오른쪽 2/3 트레일러. 두 칸의 높이는 16:9 트레일러가 정한다 */
 .columns {
   display: grid;
-  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
   gap: var(--space-5);
-  align-items: start;
+  align-items: stretch;
+}
+/* 목록을 absolute로 띄워 행 높이를 늘리지 않게 한다. 높이는 옆 칸의 트레일러가 정한다 */
+.listWrap {
+  position: relative;
+  min-width: 0;
+  min-height: 0;
 }
 .list {
+  position: absolute;
+  inset: 0;
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
-  min-width: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  /* 스크롤바는 감추고 카드만 움직이게 한다 */
+  scrollbar-width: none;
+}
+.list::-webkit-scrollbar {
+  display: none;
 }
 
+/* 카드: 감싸는 면 없이 로고와 이름만 두고, 누르면 그 아래로 상세 정보 패널이 열린다 */
 .card {
-  display: grid;
-  grid-template-columns: 200px minmax(0, 1fr);
-  gap: var(--space-5);
-  align-items: start;
-}
-.logoButton {
+  flex: none;
   display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+.cardHeading {
+  margin: 0;
+  font: inherit;
+}
+.thumb {
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
+  gap: var(--space-2);
   width: 100%;
-  min-height: 112px;
-  padding: var(--space-3);
-  border-radius: var(--radius-md);
-  border: 1px solid transparent;
-  background: var(--color-surface-sunken);
+  padding: 0;
+  border: 0;
+  background: none;
   color: inherit;
   cursor: pointer;
-  transition: border-color var(--duration-base) var(--ease-standard);
+  text-align: center;
 }
-.logoButton:hover {
-  border-color: var(--color-border-accent);
-}
+/* 로고는 칸 너비를 꽉 채우고, 세로만 막아 카드 높이가 들쭉날쭉해지지 않게 한다 */
 .logoImage {
-  max-width: 100%;
-  max-height: 96px;
+  width: 100%;
+  max-height: 180px;
   object-fit: contain;
   filter: var(--filter-drop-shadow);
 }
 .logoText {
-  font: var(--text-title);
+  padding: var(--space-6) 0;
+  font: var(--text-headline);
   font-weight: var(--font-weight-extrabold);
   letter-spacing: var(--tracking-title);
-  text-align: center;
+  text-shadow: var(--shadow-text);
 }
-.cardBody {
+/* 감싸는 면이 없어져 테두리 대신 밝기와 제목 색으로 고른 게임을 나타낸다 */
+.logoImage,
+.logoText {
+  opacity: 0.7;
+  transition: opacity var(--duration-base) var(--ease-standard);
+}
+.thumb:hover .logoImage,
+.thumb:hover .logoText,
+.cardSelected .logoImage,
+.cardSelected .logoText {
+  opacity: 1;
+}
+.cardTitle {
+  font: var(--text-title);
+  letter-spacing: var(--tracking-title);
+  text-shadow: var(--shadow-text);
+}
+.cardSelected .cardTitle {
+  color: var(--color-text-accent);
+}
+/* 펼친 상세 정보. hidden일 때 display:flex가 이기지 않도록 선택자를 한 단계 더 준다 */
+.cardDetail {
   display: flex;
   flex-direction: column;
   gap: var(--space-3);
   min-width: 0;
 }
-.cardTitle {
-  margin: 0;
-  font: var(--text-title);
-  letter-spacing: var(--tracking-title);
+.cardDetail[hidden] {
+  display: none;
 }
 .cardMeta {
-  margin: var(--space-1) 0 0;
+  margin: 0;
   color: var(--color-text-muted);
   font: var(--text-caption);
 }
@@ -255,8 +299,6 @@
 }
 
 .trailer {
-  position: sticky;
-  top: var(--space-4);
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
@@ -315,14 +357,14 @@
     grid-template-columns: minmax(0, 1fr);
   }
   .trailer {
-    position: static;
     order: -1;
   }
-  .card {
-    grid-template-columns: minmax(0, 1fr);
+  /* 한 칸으로 접히면 트레일러가 높이를 정해주지 않으므로 목록 높이를 직접 준다 */
+  .listWrap {
+    height: 380px;
   }
-  .logoButton {
-    min-height: 88px;
+  .logoImage {
+    max-height: 140px;
   }
 }
 

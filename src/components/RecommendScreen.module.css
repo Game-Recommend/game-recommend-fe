@@ -90,48 +90,111 @@
   align-items: center;
   gap: var(--space-3);
 }
-.stages {
+/* 파이프라인: 점 없이 선과 글씨로만 그린다. 병렬로 도는 단계는 두 갈래로 접고 앞뒤 칸과 선으로 잇는다 */
+.pipelineScroll {
+  margin-top: var(--space-3);
+  /* 좁은 화면에서 줄을 바꾸면 선 모양이 끊기므로 가로로 민다 */
+  overflow-x: auto;
+}
+.pipeline {
+  /* 한 갈래의 높이. 두 갈래 칸은 이 두 배가 되고, 그때 선의 25%·75%가 각 갈래의 한가운데다 */
+  --stage-row: 32px;
+  --stage-link: 26px;
+  --stage-line: 1px;
   list-style: none;
-  margin: var(--space-3) 0 0;
+  margin: 0;
   padding: 0;
   display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-2) var(--space-5);
+  /* 선이 두 갈래 칸의 높이를 그대로 받아야 25%·75% 계산이 맞는다 */
+  align-items: stretch;
+  min-width: max-content;
+}
+.step {
+  display: flex;
+  align-items: center;
+}
+.branches {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
 }
 .stage {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   gap: var(--space-2);
+  /* 두 갈래의 높이가 같아야 선이 정확히 갈래의 가운데에 붙는다 */
+  min-height: var(--stage-row);
+  /* 글씨가 선에 닿지 않게 띄운다 */
+  padding-inline: var(--space-2);
   font: var(--text-body-sm);
   color: var(--color-text-muted);
+  white-space: nowrap;
+  transition: color var(--duration-base) ease;
 }
-.stage[data-status="started"] {
-  color: var(--color-text);
+/* 양 끝은 선이 없으니 들여쓰기처럼 보이지 않게 붙인다 */
+.step:first-child .stage {
+  padding-left: 0;
+}
+.step:last-child .stage {
+  padding-right: 0;
 }
 .stage[data-status="completed"] {
-  color: var(--color-success-text);
+  color: var(--color-text);
+}
+/* 지금 도는 단계만 연두로 밝힌다 */
+.stage[data-status="started"] {
+  color: var(--color-primary);
 }
 .stage[data-status="failed"] {
   color: var(--color-danger-text);
 }
-.stageIcon {
-  width: 9px;
-  height: 9px;
-  border-radius: var(--radius-full);
-  background: currentColor;
-  opacity: 0.35;
-}
-.stage[data-status="started"] .stageIcon {
-  opacity: 1;
-  animation: pulse 1s ease-in-out infinite;
-}
-.stage[data-status="completed"] .stageIcon,
-.stage[data-status="failed"] .stageIcon {
-  opacity: 1;
-}
 .stageDetail {
   font: var(--text-caption);
-  color: var(--color-text-secondary);
+  color: color-mix(in srgb, currentColor 80%, transparent);
+}
+
+/* 칸을 잇는 선. 모양은 currentColor 그라디언트로 그리므로 상태는 색만 바꾼다 */
+.link {
+  flex: none;
+  align-self: stretch;
+  width: var(--stage-link);
+  color: var(--color-border);
+  background-repeat: no-repeat;
+  transition: color var(--duration-base) ease;
+}
+.link[data-status="completed"] {
+  color: var(--color-border-strong);
+}
+.link[data-status="started"] {
+  color: var(--color-primary);
+  animation: line-pulse 1.6s ease-in-out infinite;
+}
+.link[data-status="failed"] {
+  color: var(--color-danger-border);
+}
+/* 한 갈래 → 한 갈래: 가운데 가로선 하나 */
+.linkLine {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 100% var(--stage-line);
+  background-position: center;
+}
+/* 다음 칸이 두 갈래: 가운데로 들어와 세로선을 타고 위아래로 벌어진다 */
+.linkFork {
+  background-image:
+    linear-gradient(currentColor, currentColor), linear-gradient(currentColor, currentColor),
+    linear-gradient(currentColor, currentColor), linear-gradient(currentColor, currentColor);
+  background-size: 50% var(--stage-line), var(--stage-line) 50%, 50% var(--stage-line), 50% var(--stage-line);
+  background-position: left center, center, right 25%, right 75%;
+}
+/* 두 갈래 → 한 갈래: 세로선으로 모여 가운데로 빠져나간다 */
+.linkMerge {
+  background-image:
+    linear-gradient(currentColor, currentColor), linear-gradient(currentColor, currentColor),
+    linear-gradient(currentColor, currentColor), linear-gradient(currentColor, currentColor);
+  background-size: 50% var(--stage-line), 50% var(--stage-line), var(--stage-line) 50%, 50% var(--stage-line);
+  background-position: left 25%, left 75%, center, right center;
 }
 
 /* 결과 */
@@ -384,6 +447,13 @@
   .logoImage {
     max-height: 140px;
   }
+  .pipeline {
+    --stage-row: 26px;
+    --stage-link: 18px;
+  }
+  .stage {
+    font: var(--text-caption);
+  }
 }
 
 @keyframes fade-in {
@@ -394,12 +464,12 @@
     opacity: 1;
   }
 }
-@keyframes pulse {
+@keyframes line-pulse {
   0%,
   100% {
-    transform: scale(0.8);
+    opacity: 1;
   }
   50% {
-    transform: scale(1.25);
+    opacity: 0.4;
   }
 }
